@@ -1,0 +1,17 @@
+[
+  {
+    "merchant_id": "merch_1",
+    "merchant_name": "Coffee Place",
+    "descriptions": ["Morning latte", "Iced coffee", "Espresso shot"]
+  },
+  {
+    "merchant_id": "merch_2",
+    "merchant_name": "Grocery Store",
+    "descriptions": ["Groceries", "Produce", "Household items"]
+  },
+  {
+    "merchant_id": "merch_3",
+    "merchant_name": "Online Shop",
+    "descriptions": ["Accessory purchase", "Gadget", "Books"]
+  }
+]

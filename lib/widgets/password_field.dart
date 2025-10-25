@@ -16,6 +16,13 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    IconData iconData;
+    if (_obscure) {
+      iconData = Icons.visibility;
+    } else {
+      iconData = Icons.visibility_off;
+    }
+
     return TextFormField(
       controller: widget.controller,
       obscureText: _obscure,
@@ -23,7 +30,7 @@ class _PasswordFieldState extends State<PasswordField> {
         labelText: 'Password',
         prefixIcon: const Icon(Icons.lock),
         suffixIcon: IconButton(
-          icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+          icon: Icon(iconData),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
       ),

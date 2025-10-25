@@ -13,6 +13,11 @@ class FastFakeService extends AuthService {
   Future<Map<String, dynamic>> createCustomer(Map<String, dynamic> profile) async {
     return {...profile, 'id': 'fast-1', 'first_name': profile['first_name']};
   }
+
+  @override
+  Future<Map<String, double>> getSpendingHabits(String customerId) async {
+    return {'Shop A': 10.0};
+  }
 }
 
 void main() {
@@ -29,10 +34,13 @@ void main() {
     await tester.enterText(find.byType(TextFormField).first, 'Someone');
     await tester.enterText(find.byType(TextFormField).last, 'password');
 
-    await tester.tap(find.text('Login'));
+    // Tap the login button
+    await tester.tap(find.byKey(const Key('login_button')));
+    // await tester.tap(find.text('Login'));
     await tester.pumpAndSettle();
 
-    // After login, HomeScreen's 'Welcome' text should appear
-    expect(find.textContaining('Welcome'), findsOneWidget);
+    // After login, Dashboard should appear with mocked spending data
+    expect(find.text('Shop A'), findsOneWidget);
+    expect(find.textContaining(r'$10.00'), findsOneWidget);
   });
 }

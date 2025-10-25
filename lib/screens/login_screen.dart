@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 import '../widgets/password_field.dart';
-import 'home_screen.dart';
+import '../utils/fade_route.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -31,9 +32,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final success = await provider.login(_usernameController.text.trim(), _passwordController.text);
 
     if (success) {
-      // Navigate to home
+      // Navigate to dashboard (always) using a fade transition
       if (!mounted) return;
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HomeScreen()));
+      Navigator.of(context).push(fadeRoute(const DashboardScreen()));
     } else {
       final err = provider.error ?? 'Unknown error';
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
@@ -45,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final provider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
+      key: const Key('login_app_bar'),
       appBar: AppBar(title: const Text('Login')),
       body: Center(
         child: SingleChildScrollView(
@@ -85,13 +87,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: provider.loading ? null : () => _onLoginPressed(context),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: provider.loading ? const CircularProgressIndicator(color: Colors.white) : const Text('Login'),
-                        ),
-                      ),
+                      child: Builder(builder: (btnContext) {
+                        void Function()? onPressed;
+                        if (provider.loading) {
+                          onPressed = null;
+                        } else {
+                          onPressed = () => _onLoginPressed(context);
+                        }
+
+                        Widget childWidget;
+                        if (provider.loading) {
+                          childWidget = const CircularProgressIndicator(color: Colors.white);
+                        } else {
+                          childWidget = const Text('Login');
+                        }
+
+                        return ElevatedButton(
+                          key: const Key('login_button'),
+                          onPressed: onPressed,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: childWidget,
+                          ),
+                        );
+                      }),
                     ),
                     if (provider.error != null) ...[
                       const SizedBox(height: 12),

@@ -1,0 +1,29 @@
+[
+  {
+    "merchant_id": "merch_1",
+    "merchant_name": "Coffee Place",
+    "amount": 3.75,
+    "description": "Morning latte",
+    "purchase_date": "2025-10-01",
+    "medium": "balance",
+    "status": "completed"
+  },
+  {
+    "merchant_id": "merch_2",
+    "merchant_name": "Grocery Store",
+    "amount": 45.20,
+    "description": "Weekly groceries",
+    "purchase_date": "2025-10-03",
+    "medium": "balance",
+    "status": "completed"
+  },
+  {
+    "merchant_id": "merch_3",
+    "merchant_name": "Online Shop",
+    "amount": 19.99,
+    "description": "Accessory purchase",
+    "purchase_date": "2025-10-05",
+    "medium": "balance",
+    "status": "completed"
+  }
+]

@@ -43,3 +43,4 @@ flutter run -d macos --dart-define=NESSIE_API_KEY=YOUR_KEY_HERE
 ## Notes
 
 - If you want me to add stronger mapping between entered credentials and fetched mock user data (or a configurable mock backend), I can implement that next.
+- Failed main_test.dart

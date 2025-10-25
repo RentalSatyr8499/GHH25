@@ -45,28 +45,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
+    if (_loading) {
+      content = const CircularProgressIndicator();
+    } else if (_error != null) {
+      content = Text('Error: $_error');
+    } else if (_summary == null || _summary!.isEmpty) {
+      content = const Text('No spending data available');
+    } else {
+      content = Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _summary!.entries
+              .map((e) => ListTile(
+                    title: Text(e.key),
+                    trailing: Text('\$${e.value.toStringAsFixed(2)}'),
+                  ))
+              .toList(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard')),
-      body: Center(
-        child: _loading
-            ? const CircularProgressIndicator()
-            : _error != null
-                ? Text('Error: $_error')
-                : (_summary == null || _summary!.isEmpty)
-                    ? const Text('No spending data available')
-                    : Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: _summary!.entries
-                              .map((e) => ListTile(
-                                    title: Text(e.key),
-                                    trailing: Text('\$${e.value.toStringAsFixed(2)}'),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-      ),
+      body: Center(child: content),
     );
   }
 }

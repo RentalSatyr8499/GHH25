@@ -25,7 +25,19 @@ class AuthService {
     }
 
     final body = json.decode(resp.body) as Map<String, dynamic>;
-    customerId = body['id'] as String?;
+
+    // Nessie may return the created id nested under objectCreated['_id']
+    String? extractedId;
+    final objCreated = body['objectCreated'];
+    if (objCreated is Map<String, dynamic>) {
+      extractedId = objCreated['_id'] as String?;
+    }
+    if (extractedId == null) {
+      final maybeId = body['id'];
+      if (maybeId is String) extractedId = maybeId;
+    }
+    customerId = extractedId;
+
     return body;
   }
 
@@ -36,7 +48,6 @@ class AuthService {
 
     final uri = Uri.parse('$baseUrl/purchases').replace(queryParameters: {'customer_id': customerId, 'key': apiKey});
     final resp = await _client.get(uri);
-
     if (resp.statusCode != 200) {
       throw Exception('Nessie purchases request failed: ${resp.statusCode} ${resp.body}');
     }
@@ -46,9 +57,19 @@ class AuthService {
 
     final Map<String, double> summary = {};
     for (final item in body.cast<Map<String, dynamic>>()) {
-      final merchant = item['merchant_name'] ?? 'Unknown';
-      final amount = (item['amount'] is num) ? (item['amount'] as num).toDouble() : 0.0;
-      summary[merchant] = (summary[merchant] ?? 0.0) + amount;
+      final merchant = item['merchant_name'] is String ? item['merchant_name'] as String : 'Unknown';
+      double amount;
+      if (item['amount'] is num) {
+        amount = (item['amount'] as num).toDouble();
+      } else {
+        amount = 0.0;
+      }
+
+      if (summary[merchant] == null) {
+        summary[merchant] = amount;
+      } else {
+        summary[merchant] = (summary[merchant] ?? 0.0) + amount;
+      }
     }
     return summary;
   }
