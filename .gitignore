@@ -1,0 +1,15 @@
+.dart_tool/
+.packages
+build/
+.idea/
+.vscode/
+ios/Flutter/.symlinks
+android/.gradle
+pubspec.lock
+**/generated_plugin_registrant.dart
+*.iml
+*.ipr
+*.iws
+*.log
+*.tmp
+flutter_*.png
