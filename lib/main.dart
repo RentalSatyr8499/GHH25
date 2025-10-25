@@ -1,40 +1,50 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'screens/login_screen.dart';
+import 'providers/auth_provider.dart';
+import 'services/auth_service.dart';
 
 void main() {
-  runApp(const MyApp());
+  // Read Nessie API key from --dart-define at runtime. Leave empty by default.
+  final apiKey = const String.fromEnvironment('NESSIE_API_KEY', defaultValue: '');
+  runApp(MyApp(apiKey: apiKey));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final String apiKey;
+
+  const MyApp({Key? key, required this.apiKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GHH25 Login Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // Use the builder to wrap the app's root content when running on macOS
-      builder: (context, child) {
-        // Detect macOS via the target platform to avoid dart:io imports (web-safe)
-        final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
-        if (!isMacOS) return child ?? const SizedBox.shrink();
+    return ChangeNotifierProvider(
+      create: (_) => AuthProvider(AuthService(apiKey: apiKey)),
+      child: MaterialApp(
+        title: 'GHH25 Login Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        // Use the builder to wrap the app's root content when running on macOS
+        builder: (context, child) {
+          final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
+          if (!isMacOS) return child ?? const SizedBox.shrink();
 
-        // iPhone 11 logical pixels: 375 x 812
-        return Center(
-          child: SizedBox(
-            width: 375,
-            height: 812,
-            // Provide a material canvas for visual fidelity
-            child: Material(
-              elevation: 0,
-              child: child ?? const SizedBox.shrink(),
+          // iPhone 11 logical pixels: 375 x 812
+          return Center(
+            child: SizedBox(
+              width: 375,
+              height: 812,
+              child: Material(
+                elevation: 0,
+                child: child ?? const SizedBox.shrink(),
+              ),
             ),
-          ),
-        );
-      },
-      home: const LoginScreen(),
+          );
+        },
+        home: const LoginScreen(),
+      ),
     );
   }
 }
